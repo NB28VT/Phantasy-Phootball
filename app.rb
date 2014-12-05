@@ -9,14 +9,6 @@ require 'nokogiri'
 Dotenv.load
 
 
-
-
-
-# SUCCESFULLY RETURNS AN ARRAY OF ALL SONGS FROM RANDOM SHOW
-
-
-
-
 def load_latest_show
   random_setlist = HTTParty.get("https://api.phish.net/api.json?api=2.0&method=pnet.shows.setlists.latest")
 
@@ -47,4 +39,19 @@ def load_latest_show
   encore_data.css('a').each do |song|
     encore << song.children.text
   end
+end
+
+
+def load_song_list
+# IN THE FUTURE, LOAD TO DB FOR ACCESS
+  contents = File.read("song_list_raw.txt")
+  lines = File.readlines("song_list_raw.txt")
+
+  songs = []
+
+  lines.each do |line|
+    song = line.split("\"")[1]
+    songs << song
+  end
+  songs = songs.compact
 end
