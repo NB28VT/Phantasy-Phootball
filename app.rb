@@ -10,10 +10,10 @@ Dotenv.load
 
 
 def load_latest_show
-  random_setlist = HTTParty.get("https://api.phish.net/api.json?api=2.0&method=pnet.shows.setlists.latest")
+  latest_setlist = HTTParty.get("https://api.phish.net/api.json?api=2.0&method=pnet.shows.setlists.latest")
 
-  jsoned = JSON.parse(random_setlist)
-  random_setlist_data = jsoned[0]["setlistdata"]
+  jsoned = JSON.parse(latest_setlist)
+  latest_setlist_data = jsoned[0]["setlistdata"]
   setlist = Nokogiri::HTML(random_setlist_data)
 
   set_one = []
@@ -58,8 +58,34 @@ end
 
 
 
-def find_song_gaps
-  # ADD METHOD TO FIND SONG GAPS BY PARSING PHISH.NET SONG HISTORY PAGE
+def load_songs_and_gaps
+
+  load_song_page = HTTParty.get("http://phish.net/song/")
+  parsed_song_page = Nokogiri::HTML(load_song_page)
+  song_rows = parsed_song_page.css('tr')
+
+  songs_hash = {}
+
+  song_rows.each do |song|
+    song_info = {}
+    title = song.children.children[0].text
+    artist = song.children.children[1].text
+    if song.children.children[5]
+      gap = song.children.children[5].text
+    else
+      gap = nil
+    end
+
+    song_info["artist"] = artist
+    song_info["gap"] = gap
+
+    songs_hash[title] = song_info
+  end
+
+  # removes first row (column header)
+
+  songs_hash.delete("Song Name")
+  songs_hash
 end
 
 
