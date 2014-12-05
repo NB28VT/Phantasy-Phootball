@@ -55,3 +55,14 @@ def load_song_list
   end
   songs = songs.compact
 end
+
+
+
+def find_song_gaps
+  # ADD METHOD TO FIND SONG GAPS BY PARSING PHISH.NET SONG HISTORY PAGE
+end
+
+
+
+
+# BUILD LOAD RANDOM SHOW FOR TESTING
